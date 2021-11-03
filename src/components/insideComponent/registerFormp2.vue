@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 15:08:44
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-03 17:59:36
+ * @LastEditTime: 2021-11-03 19:40:36
  * @Description: 
 -->
 <template>
@@ -16,7 +16,7 @@
                 <el-form-item label="手机号" prop="phonenum">
                     <el-input v-model="liaison.phonenum"></el-input>
                 </el-form-item>
-                <el-form-item label="做座机号">
+                <el-form-item label="座机号">
                     <el-input v-model="liaison.telephonenum"></el-input>
                 </el-form-item>
                 <el-form-item label="传真号">
@@ -29,13 +29,13 @@
                     <el-input v-model="liaison.remarks"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-tag @close="closeTag(lia)" style="margin:0 1px;" v-for="lia in liaisons" :key="lia.name" closable>{{lia.name}}</el-tag>
+                    <el-tag @close="deleteLiaison(lia)" style="margin:0 1px;" v-for="lia in liaisons" :key="lia.name" closable>{{lia.name}}</el-tag>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="addLiaison">+添加联系人</el-button>
                 </el-form-item>
         </el-form>
-        <el-form :rules="rules" :model="product" label-position="left" label-width="80px">
+        <el-form ref="productForm" :rules="rules" :model="product" label-position="left" label-width="80px">
                 <p>公司主要产品</p>
                 <el-form-item label="产品名称" prop="name">
                     <el-input v-model="product.name"></el-input>
@@ -56,13 +56,13 @@
                     <el-input v-model="product.remarks"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-tag @close="closeTag" style="margin:0 1px;" closable v-for="pro in products" :key="pro.name">{{pro.name}}</el-tag>
+                    <el-tag @close="deleteProduct(pro)" style="margin:0 1px;" closable v-for="pro in products" :key="pro.name">{{pro.name}}</el-tag>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="addProduct">+添加主要产品</el-button>
                 </el-form-item>
         </el-form>
-        <el-form :rules="rules" :model="custom" label-position="left" label-width="80px">
+        <el-form ref="customForm" :rules="rules" :model="custom" label-position="left" label-width="80px">
                 <p>公司主要客户</p>
                 <el-form-item label="客户名称" prop="name">
                     <el-input v-model="custom.name"></el-input>
@@ -77,10 +77,10 @@
                     <el-input v-model="custom.remarks"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-tag style="margin:0 1px;" closable v-for="cus in customs" :key="cus.name">{{cus.name}}</el-tag>
+                    <el-tag @click="deleteCustom(cus)" style="margin:0 1px;" closable v-for="cus in customs" :key="cus.name">{{cus.name}}</el-tag>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="addCustom">+添加主要客户</el-button>
+                    <el-button @click="addCustom()">+添加主要客户</el-button>
                 </el-form-item>
         </el-form>
     </div>
@@ -142,7 +142,7 @@ export default {
     },
 
     methods: {
-        closeTag(data){
+        deleteLiaison(data){
             this.liaisons.splice(this.liaisons.indexOf(data), 1)
         },
         addLiaison() {
@@ -157,11 +157,35 @@ export default {
                 }
             })
         },
+        deleteProduct(pro) {
+            this.products.splice(this.products.indexOf(pro), 1)
+        },
         addProduct() {
-
+            this.$refs.productForm.validate(res=>{
+                if (res) {
+                    this.products.push(this.product)
+                }else {
+                    this.$message({
+                        message: '输入必要信息才能后添加主要产品',
+                        type: 'error'
+                    })
+                }
+            })
+        },
+        deleteCustom(custom){
+            this.customs.splice(this.customs.indexOf(custom), 1)
         },
         addCustom() {
-
+            this.$refs.customForm.validate(res=>{
+                if (res) {
+                    this.customs.push(this.custom)
+                } else{
+                    this.$message({
+                        message: '输入必要信息后才能添加客户信息',
+                        type: 'error'
+                    })
+                }
+            })
         }
     },
 };
