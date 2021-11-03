@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 11:06:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-03 16:14:34
+ * @LastEditTime: 2021-11-03 20:05:56
  * @Description: 
 -->
 <template>
@@ -46,7 +46,15 @@ export default {
     mounted() {
         
     },
-
+    created() {
+        if (sessionStorage.getItem('register-p-page')) {
+            Object.assign(this.$data, JSON.parse(sessionStorage.getItem('register-p-page')))
+        }
+        window.addEventListener("beforeunload",()=>{
+            console.log('unload')
+            sessionStorage.setItem("register-p-page",JSON.stringify(this.$data));
+        });
+    },
     methods: {
         next(msg) {
             this.active = msg
