@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from "@/components/login.vue"
 import Index from '@/components/index.vue'
 import Registerp from '@/components/registerp.vue'
+import Main from '@/components/logined/main.vue'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       name: 'registerp',
       component: Registerp
 
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: Main
     }
   ]
 })

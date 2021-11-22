@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-01 09:51:22
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-03 11:35:36
+ * @LastEditTime: 2021-11-22 21:25:17
  * @Description: 
 -->
 
@@ -10,7 +10,7 @@
     
   <div>
     <div>
-      <el-row :gutter="20" class="title-area">
+      <el-row class="title-area">
         <el-col :span="12">
           <img src="../assets/title-logo.png"/>
         </el-col>
@@ -60,26 +60,26 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.setPageSize()
+    window.addEventListener("DOMContentLoaded", this.setPageSize);
+  },
 
   methods: {
       showprovide() {
-          console.log('hahah')
-          this.showWhichForm = true
+
+          this.showWhichForm = false
       },
       showbuyer() {
-          this.showWhichForm = false
+          this.showWhichForm = true
+      },
+      setPageSize() {
+        let hei = window.innerHeight;
+        let loginArea = document.getElementById("login-area");
+        loginArea.style.height = hei - 120 + "px";
       }
   }
 };
-
-window.addEventListener("DOMContentLoaded", () => {
-  let hei = window.innerHeight;
-  let wid = window.innerWidth;
-  let loginArea = document.getElementById("login-area");
-  loginArea.style.height = hei - 120 + "px";
-  loginArea.style.width = wid + "px";
-});
 </script>
 
 <style lang="css" scoped>

@@ -2,14 +2,14 @@
  * @Author: feizzer
  * @Date: 2021-11-03 11:42:23
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-03 17:41:10
+ * @LastEditTime: 2021-11-03 20:40:42
  * @Description: 
 -->
 <template>
     <div class="form-box">
         <el-form ref="registerform" :rules="rules" :model="formData" label-width="80px" label-position="left">
             <el-form-item label="用户姓名" prop="name">
-                <el-input v-model="formData.name"></el-input>
+            <el-input v-model="formData.name"></el-input>
             </el-form-item>
             <el-form-item label="手机号" prop="phonenum">
                 <el-input v-model="formData.phonenum"></el-input>
