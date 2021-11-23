@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-22 22:04:39
+ * @LastEditTime: 2021-11-23 16:11:44
  * @Description: 
 -->
 <template>
@@ -10,19 +10,19 @@
     <el-header>Header</el-header>
     <el-container class="inside-container">
       <el-aside width="200px">
-        <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" text-color="#fff"
-                    @close="handleClose" :collapse="isCollapse" background-color="#292D30">
-          <el-menu-item index="1">
+        <el-menu router default-active="1" class="el-menu-vertical-demo" @open="handleOpen" text-color="#fff"
+                    @close="handleClose" background-color="#292D30">
+          <el-menu-item index="1" route='/home/qualification'>
             <i class="el-icon-help"></i>
             <span slot="title">产品资格申请</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="2" route="/home/productindemand">
             <i class="el-icon-menu"></i>
             <span slot="title">正在招标</span>
           </el-menu-item>
-          <el-menu-item index="3">
-            <i class="el-icon-document"></i>
-            <span slot="title">导航三</span>
+          <el-menu-item index="3" route="/home/accountinfo">
+            <i class="el-icon-user"></i>
+            <span slot="title">账户信息</span>
           </el-menu-item>
           <el-menu-item index="4">
             <i class="el-icon-setting"></i>
@@ -31,18 +31,18 @@
         </el-menu>
       </el-aside>
       <el-main class="main-area">
-          <product-in-need-table></product-in-need-table>
+          <router-view/>
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import ProductInNeedTable from './producter/productInNeed_Table.vue'
+
 export default {
   name: "PurchasingPlatformVueMain",
   components: {
-      ProductInNeedTable,
+
   },
   data() {
     return {};
@@ -52,6 +52,9 @@ export default {
   },
 
   methods: {
+    handleOpen() {},
+    handleClose(){},
+    isCollapse(){}
   }
 };
 </script>
