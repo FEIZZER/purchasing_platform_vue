@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-24 19:15:28
+ * @LastEditTime: 2021-11-24 21:35:16
  * @Description: 
 -->
 <template>
@@ -32,6 +32,10 @@
           <el-menu-item index="4" route="/home/authorized">
             <i class="el-icon-eleme"></i>
             <span>发起资质申请</span>
+          </el-menu-item>
+          <el-menu-item index="5" route="/home/releaseproduct">
+            <i class="el-icon-s-data"></i>
+            <span>发布标案</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

@@ -14,6 +14,7 @@ import History from '@/components/logined/producter/history.vue'
 import ProductAuthorized from '@/components/logined/producter/productauthorized.vue'
 
 import Authorized from '@/components/logined/purchase/authorized.vue'
+import ReleaseProduct from '@/components/logined/purchase/releaseproduct.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -54,7 +55,8 @@ export default new Router({
            {path: 'productauthorized', component: ProductAuthorized},
          ]},
 
-         {path: 'authorized', component: Authorized}
+         {path: 'authorized', component: Authorized},
+         {path: 'releaseproduct', component: ReleaseProduct}
       ]
     }
   ]

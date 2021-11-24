@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-24 19:17:48
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-24 20:59:35
+ * @LastEditTime: 2021-11-24 21:38:34
  * @Description: 
 -->
 <template>
@@ -19,6 +19,16 @@
       </el-tree>
     </div>
     <div class="authorized-area">
+        <div>
+            <el-select v-model="selectArray" multiple placeholder="只看相关产品">
+            <el-option  v-for="product in productData" :key="product.label" :value="product.label"
+                    :label="product.label" :disabled="product.status == 0"></el-option>
+            </el-select>
+            <el-input style="width:50%" placeholder="请输入供应商名" prefix-icon="el-icon-search" v-model="selectInput">
+            </el-input> 
+            <el-button type="primary" @click="hahah">查询</el-button>
+        </div>
+
         <el-table :data="authorizingTable">
             <el-table-column prop="date" label="发起日期" width="180">
             </el-table-column>
@@ -65,9 +75,9 @@ export default {
             ]
         },
         productData: [
-            { label: "鸡蛋", id: 1 , status: '0'},
-            { label: "泡面", id: 3 , status: '0'},
-            {  label: "西瓜", id: 2 ,status: '1'},
+            { label: "鸡蛋", id: 1 , status: 0},
+            { label: "泡面", id: 3 , status: 0},
+            {  label: "西瓜", id: 2 ,status: 1},
         ],
         authorizingTable: [
             {date: '2021-11-1', provider: '霍格沃兹魔法部', product: '魔法棒', status: -1},
@@ -76,7 +86,9 @@ export default {
         productID: '',
         formData: {
             startendTime: '',
-        }
+        },
+        selectArray: [],
+        selectInput: '',
     };
   },
 
@@ -102,6 +114,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.el-select{
+    margin-bottom: 30px;
+}
 .product-tree {
   width: 20%;
 }
