@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-23 16:12:05
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-23 17:35:10
+ * @LastEditTime: 2021-11-23 17:53:49
  * @Description: 
 -->
 <template>
@@ -54,8 +54,7 @@ export default {
     .title-area{
         padding-top: 30px;
         padding-left: 80px;
-        width: 100%;
-        border: 1px black solid;
+        
         height: 15%;
         display: flex;
         flex-direction: row;
@@ -63,8 +62,7 @@ export default {
     .body-area{
         padding: 20px;
         padding-top: 0px;
-        width: 100%;
-        border: 1px black solid;
+        /* border: 1px black solid; */
         height: 80%;
     }
 

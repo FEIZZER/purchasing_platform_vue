@@ -12,6 +12,8 @@ import Message from '@/components/logined/messages.vue'
 import Integral from '@/components/logined/producter/integral.vue'
 import History from '@/components/logined/producter/history.vue'
 import ProductAuthorized from '@/components/logined/producter/productauthorized.vue'
+
+import Authorized from '@/components/logined/purchase/authorized.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -49,8 +51,10 @@ export default new Router({
            {path: "messages", component: Message},
            {path: 'integral', component: Integral},
            {path: 'history', component: History},
-           {path: 'productauthorized', component: ProductAuthorized}
-         ]}
+           {path: 'productauthorized', component: ProductAuthorized},
+         ]},
+
+         {path: 'authorized', component: Authorized}
       ]
     }
   ]

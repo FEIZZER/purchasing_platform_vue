@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-23 16:11:44
+ * @LastEditTime: 2021-11-24 19:15:28
  * @Description: 
 -->
 <template>
@@ -24,9 +24,14 @@
             <i class="el-icon-user"></i>
             <span slot="title">账户信息</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item>
             <i class="el-icon-setting"></i>
             <span slot="title">导航四</span>
+          </el-menu-item>
+
+          <el-menu-item index="4" route="/home/authorized">
+            <i class="el-icon-eleme"></i>
+            <span>发起资质申请</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
