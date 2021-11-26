@@ -2,12 +2,12 @@
  * @Author: feizzer
  * @Date: 2021-11-23 17:38:43
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-26 16:53:50
+ * @LastEditTime: 2021-11-26 21:29:17
  * @Description: 
 -->
 <template>
-    <div>
-        <el-container>
+    <div style="height:100%">
+        <el-container style="height: 100%">
             <el-aside>
                 <div class="msg_box" v-for="msg in message" :key="msg.from">
                     <div style="display: flex;">
@@ -23,7 +23,19 @@
                 </div>
             </el-aside>
             <el-main>
-                
+                <div>
+                    <div class="content_box">
+                        <div style="display: flex; font-size: 12px">
+                            <div>name  </div>
+                            <div>2021-11-11 12:10</div>
+                        </div>
+                        <div style="font-size: 24px">
+                            hahahahahahahah
+                        </div>
+                    </div>
+                    <el-divider class="content_divider" content-position="center">2021-11-11</el-divider>
+                </div>
+
             </el-main>
         </el-container>
     </div>
@@ -59,6 +71,8 @@ export default {
     }
     .el-aside{
         width: 300px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        height: 100%;
     }
     .msg_box{
         cursor: pointer;
@@ -71,5 +85,15 @@ export default {
     .preview{
         margin-top: 5px;
         font-size: 12px;
+    }
+    .el-main{
+        padding: 20px;
+    }
+    .content_box{
+        width: 70%;
+        
+    }
+    .content_divider{
+        margin-top: 20px;
     }
 </style>
