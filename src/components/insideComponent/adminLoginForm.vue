@@ -2,14 +2,14 @@
  * @Author: feizzer
  * @Date: 2021-12-05 13:50:58
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-06 10:16:59
+ * @LastEditTime: 2021-12-06 10:16:47
  * @Description: 
 -->
 <template>
   <div>
     <el-form ref="form" :model="formData" label-width="60px" label-position="left" :rules="rules">
       <el-form-item>
-        <div class="login-title">超级管理员登录</div>
+        <div class="login-title">管理员登录</div>
       </el-form-item>
       <el-form-item label="账户" prop="account">
         <el-input v-model="formData.account"></el-input>
@@ -50,6 +50,7 @@ export default {
   },
 
   mounted() {
+      console.log('this is state', this.$store.state.logined)
   },
 
   methods: {
@@ -63,7 +64,8 @@ export default {
           params: {
             username: this.formData.account,
             password: this.formData.password,
-            roleType: '772a7b13dabc015c495d9056aed54a85'
+            roleType: 'f2779e805950be76390fff2b186879ad'
+
           }
         })
         .then( res => {
@@ -72,7 +74,6 @@ export default {
             let data = res.data
             if (data.code === 200 && data.success) {
                 localStorage.setItem('token', data.data)
-                // this.$router.addRoutes(superAdminRoutes);
                 this.$router.push({ path: '/home',})
             }
             else {
