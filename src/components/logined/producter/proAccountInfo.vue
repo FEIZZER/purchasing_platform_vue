@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-23 16:12:05
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-23 17:53:49
+ * @LastEditTime: 2021-12-06 15:46:23
  * @Description: 
 -->
 <template>
@@ -11,10 +11,15 @@
             <div class="title-img">
                 <img src="../../../assets/logo.png" alt="">
             </div>
-            <div class="title-info">
-                <div style="margin: 9px;font-size:20px">湖北快乐水生产商</div>
-                <div style="margin: 9px;margin-top: 4px; font-size: 15px; ">注册日期 2019-1-1</div>
-            </div>
+            <el-descriptions class="margin-top" title="供应商主页" :column="3" :size="size" >
+                <el-descriptions-item label="用户名">kooriookami</el-descriptions-item>
+                <el-descriptions-item label="手机号">18100000000</el-descriptions-item>
+                <el-descriptions-item label="地址">苏州市</el-descriptions-item>
+                <el-descriptions-item label="备注">
+                     <el-tag size="small">优秀工厂</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="联系地址">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
+            </el-descriptions>
         </div>
         <div class="body-area">
             <el-menu router default-active="1" mode="horizontal" @select="handleSelect" 
@@ -70,5 +75,8 @@ export default {
         border-radius: 50%;
         height: 50%;
         border: 0.3px solid #001111;
+    }
+    .title-img{
+        margin-right: 30px;
     }
 </style>
