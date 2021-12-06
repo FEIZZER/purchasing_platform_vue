@@ -15,6 +15,9 @@ import ProductAuthorized from '@/components/logined/producter/productauthorized.
 
 import Authorized from '@/components/logined/purchase/authorized.vue'
 import ReleaseProduct from '@/components/logined/purchase/releaseproduct.vue'
+
+import adminpage from '@/components/logined/adminSuper/adminpage'
+import orgnizationpage from '@/components/logined/adminSuper/orgnizationPage'
 Vue.use(Router)
 
 export default new Router({
@@ -56,7 +59,10 @@ export default new Router({
          ]},
 
          {path: 'authorized', component: Authorized},
-         {path: 'releaseproduct', component: ReleaseProduct}
+         {path: 'releaseproduct', component: ReleaseProduct} ,
+
+         {path: 'adminpage', component: adminpage},
+         {path: 'orgnizationpage', component: orgnizationpage}
       ]
     }
   ]

@@ -2,14 +2,14 @@
  * @Author: feizzer
  * @Date: 2021-11-01 09:51:22
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-06 10:08:26
+ * @LastEditTime: 2021-12-06 10:29:16
  * @Description: 
 -->
 
 <template>
     
-  <div>
-    <div>
+  <div style="height: 100%">
+    <div style="height:120px">
       <el-row class="title-area">
         <el-col :span="12">
           <img src="../assets/title-logo.png"/>
@@ -81,8 +81,7 @@ export default {
   },
 
   mounted() {
-    this.setPageSize()
-    window.addEventListener("DOMContentLoaded", this.setPageSize);
+
   },
 
   methods: {
@@ -131,6 +130,7 @@ html {
   background-color: #2d61e0;
   display: flex;
   justify-content: center;
+  height: 86%;
 }
 .login-left {
     margin: auto;

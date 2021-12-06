@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-11-24 21:35:16
+ * @LastEditTime: 2021-12-06 10:35:45
  * @Description: 
 -->
 <template>
@@ -36,6 +36,14 @@
           <el-menu-item index="5" route="/home/releaseproduct">
             <i class="el-icon-s-data"></i>
             <span>发布标案</span>
+          </el-menu-item>
+           <el-menu-item index="6" route="/home/adminpage">
+            <i class="el-icon-s-data"></i>
+            <span>管理员列表</span>
+          </el-menu-item>
+           <el-menu-item index="7" route="/home/orgnizationpage">
+            <i class="el-icon-s-data"></i>
+            <span>组织列表</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
