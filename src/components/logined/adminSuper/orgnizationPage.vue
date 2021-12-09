@@ -2,37 +2,37 @@
  * @Author: feizzer
  * @Date: 2021-12-05 20:56:53
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-06 17:56:39
+ * @LastEditTime: 2021-12-09 16:37:41
  * @Description: 
 -->
 
 <template>
-    <div style="height:100%">
+    <div class="area" style="height:100%; width:100%; display: flex; flex-direction:column;">
         <div style="margin: 15px; display: flex;">
             <el-button style="margin-right: 20px" type="primary" @click="changeOrganize(null, true)">
                 添加组织信息
             </el-button>
-            <el-input style="width: 60%" placeholder="请输入内容" v-model="searchThing">
+            <el-input style="width: 100%;" placeholder="请输入内容" v-model="searchThing">
                 <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
         </div>
-        <el-table :data="organizes">
-            <el-table-column label="编号" width="300px" prop="id">
+        <div>
+            <el-table :data="organizes">
+                <el-table-column label="序号" width="100px" type="index">
+                </el-table-column>
+                <el-table-column label="名称" width="250px" prop="organizeName">
 
-            </el-table-column>
-            <el-table-column label="名称" width="220px" prop="organizeName">
-
-            </el-table-column>
-            <el-table-column label="描述" width="300px" prop="description">
-
-            </el-table-column>
-            <el-table-column label="操作" width="200px">
-                <template slot-scope="scope">
-                    <el-button type="success" size="mini" @click="changeOrganize(scope.row.id, false)">修改</el-button>
-                    <el-button type="danger" size="mini">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+                </el-table-column>
+                <el-table-column label="描述" width="450px" prop="description">
+                </el-table-column>
+                <el-table-column label="操作" width="200px">
+                    <template slot-scope="scope">
+                        <el-button type="success" size="mini" @click="changeOrganize(scope.row.id, false)">修改</el-button>
+                        <el-button type="danger" size="mini">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
         <div class="block" style="margin:30px 500px">
             <el-pagination layout="prev, pager, next" :total="organizes.length">
             </el-pagination>
@@ -88,37 +88,23 @@ export default {
 
     methods: {  
         search() {
-            let empty = []
             this.$http.get('/getAllOrganizationInfosByPageAndConditions', {
                 params:{
                     queryConditions: this.searchThing
                 }
             })
             .then(res => {
+                console.log(res)
                 let data = res.data
-                if (data.success) {
-                    empty = empty.concat(data.data.organizations)
+                if (data.success){
+                    this.organizes = data.data.organizations
                 }
-                this.$http.get('/getOrganizationInfoById', {
-                    params: {
-                        id: this.searchThing
-                    }
-                })
-                .then(res => {
-                    let ddata = res.data
-                    if(ddata.success) {
-                        empty = empty.concat(ddata.data)
-                    }
-
-                    if (empty.length === 0) {
-                        this.$message({
-                            type: 'warning',
-                            message: '未查询到相关组织'
-                        })
-                    }else{
-                        this.organizes = empty
-                    }
-                })
+                else{
+                    this.$message({
+                        type: 'warning',
+                        message: '未查询到相关组织'
+                    })
+                }
             })
         },
         submitOrg() {
@@ -227,5 +213,13 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
+.area{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+}
+.el-table{
+    margin: 0 auto;
+}
 </style>
