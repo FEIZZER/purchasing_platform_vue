@@ -2,81 +2,128 @@
  * @Author: feizzer
  * @Date: 2021-11-01 09:51:22
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-06 10:29:16
+ * @LastEditTime: 2021-12-09 22:04:11
  * @Description: 
 -->
 
 <template>
     
   <div style="height: 100%">
-    <div style="height:120px">
-      <el-row class="title-area">
-        <el-col :span="12">
-          <img src="../assets/title-logo.png"/>
-        </el-col>
-        <el-col :span="3">
-            <div style="height:100%" class="rolepickbox">
-                <div class="roleChoice" @click="changeForm(1)" > 
-                    <i class="el-icon-guide"></i>
-                    供应商登录
+      <div style="height:120px">
+      </div>
+        <div id="login-area">
+            <div class="login-left">
+                <img src="" alt="" style="heigth=100%;width=68%">
+            </div>
+            <div class="login-form">
+                <el-tabs v-model="loginType" @tab-click="handleClick">
+                  <el-tab-pane name="account" label="账户登录"></el-tab-pane>
+                  <el-tab-pane name="phone" label="手机号登录"></el-tab-pane>
+                </el-tabs>
+                <div v-if="loginType == 'account'">
+                  <el-form hide-required-asterisk :model="accountData" :rules="Rules"  
+                          ref="accountForm">
+                    <el-form-item label="账户" label-width="55px" prop="username">
+                      <el-input v-model="accountData.username"></el-input>
+                    </el-form-item>
+                    <el-form-item label="密码" label-width="55px" prop="password">
+                      <el-input type="password" v-model="accountData.password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="角色" label-width="55px" prop="roleType">
+                      <el-select v-model="accountData.roleType">
+                        <el-option value="772a7b13dabc015c495d9056aed54a85" label="超级管理员"></el-option>
+                        <el-option value="f2779e805950be76390fff2b186879ad" label="管理员"></el-option>
+                        <el-option value="ebeda8021fccea8209458c3f89b80aad" label="采购员"></el-option>
+                        <el-option value="ebd95568c552bc9e808c9b6b680eb6f8" label="供应商"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="" label-width="60px">
+                      <el-button type="primary" @click="accountLogin">登录</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+
+
+                <div v-else>
+                  <el-form :model="phoneData" :rules="Rules" hide-required-asterisk ref="phoneitem">
+                    <el-form-item label="手机号" label-width="60px" prop="mobilePhone">
+                      <el-input v-model="phoneData.mobilePhone"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <el-form :model="phoneData" :inline="true" :rules="Rules" hide-required-asterisk 
+                              ref="codeitem">
+                    <el-form-item label="验证码" label-width="60px" prop="verifyCode">
+                      <el-input v-model="phoneData.verifyCode"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button @click="getCode">获取验证码</el-button>
+                    </el-form-item>
+                  </el-form>
+                  <el-form :model="phoneData" :rules="Rules" ref="roleitem">
+                    <el-form-item label="角色" label-width="60px" prop="roleType">
+                      <el-select v-model="phoneData.roleType">
+                        <el-option value="772a7b13dabc015c495d9056aed54a85" label="超级管理员"></el-option>
+                        <el-option value="f2779e805950be76390fff2b186879ad" label="管理员"></el-option>
+                        <el-option value="ebeda8021fccea8209458c3f89b80aad" label="采购员"></el-option>
+                        <el-option value="ebd95568c552bc9e808c9b6b680eb6f8" label="供应商"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="" label-width="60px">
+                      <el-button type="primary" @click="phoneLogin">
+                        登录
+                      </el-button>
+                    </el-form-item>
+                  </el-form>
+
                 </div>
             </div>
-        </el-col>
-        <el-col :span="3">
-            <div style="height:100%" class="rolepickbox">
-                <div class="roleChoice" @click="changeForm(2)">
-                    <i class="el-icon-goods"></i>
-                    采购员登录</div>
-            </div>
-        </el-col>
-        <el-col :span="3">
-            <div style="height:100%" class="rolepickbox">
-                <div class="roleChoice" @click="changeForm(3)">
-                    <i class="el-icon-goods"></i>
-                    管理员登录</div>
-            </div>
-        </el-col>
-        <el-col :span="3">
-            <div style="height:100%" class="rolepickbox">
-                <div class="roleChoice" @click="changeForm(4)">
-                    <i class="el-icon-goods"></i>
-                    超级管理员登录</div>
-            </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <div id="login-area">
-      <div class="login-left">
-          <img src="" alt="" style="heigth=100%;width=78%">
-      </div>
-      <div class="login-form">
-          <login-form v-if="showWhichForm == 1"></login-form>
-          <login-form-another v-if="showWhichForm == 2"></login-form-another>
-          <admin v-if="showWhichForm == 3"></admin>
-          <sadmin v-if="showWhichForm == 4"></sadmin>
-      </div>
-    </div>
+        </div>
   </div>
 
 </template>
 
 <script>
-import LoginForm from '@/components/insideComponent/loginForm.vue'
-import LoginFormAnother from '@/components/insideComponent/LoginFormAnother.vue'
-import admin from '@/components/insideComponent/adminLoginForm'
-import sadmin from '@/components/insideComponent/sadminLoginForm'
 export default {
   name: "PurchasingPlatformVueLogin",
   components: {
-      LoginForm,
-        LoginFormAnother,
-      admin,
-      sadmin
+      
   },
   data() {
     return {
-        showWhichForm: 1
+      loginType: 'account',
+      accountData: {
+        username:'superAccount',
+        password: '123456',
+        roleType: '772a7b13dabc015c495d9056aed54a85',
+      },
+      phoneData: {
+        mobilePhone: '',
+        verifyCode: '',
+        roleType: '',
+      },
+
+
+
+      Rules: {
+        username: [
+          {required: true, message: '请输入您的账户信息', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, min: 6, max: 20, message: '请输入6~20长的密码', trigger: ['blur', 'change']}
+        ],
+        roleType: [
+          {required: true, message: '请选择您的角色信息', trigger: 'blur'}
+        ],
+        mobilePhone: [
+          {required: true, message: '请输入手机号', trigger: 'blur'},
+          {pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, 
+                     message: '请输入正确的手机号', trigger: 'blur'}
+          
+        ],
+        verifyCode: [
+          {required: true, message: '请输入验证码', trigger: 'blur'}
+        ]
+      },
     };
   },
 
@@ -85,14 +132,50 @@ export default {
   },
 
   methods: {
-      changeForm(data) {
-        this.showWhichForm = data
-      },
-      setPageSize() {
-        let hei = window.innerHeight;
-        let loginArea = document.getElementById("login-area");
-        loginArea.style.height = hei - 120 + "px";
+    accountLogin() {
+      this.$refs.accountForm.validate(res => {
+        if (res) {
+          this.$http.get('/getTokenByUserName', {
+            params: this.accountData
+          })
+          .then(res => {
+            let data = res.data
+            if (data.success) {
+              this.$router.push({
+                path: 'home'
+              })
+            }else {
+              this.$message({
+                type: 'warning',
+                message: data.msg
+              })
+            }
+          })
+          .catch(err => {
+            console.error(err)
+          })
+        }
+      })
+    },
+    async phoneLogin() {
+      let a = await this.$refs.phoneitem.validate()
+      let b = await this.$refs.codeitem.validate()
+      let c = await this.$refs.roleitem.validate()
+      if (a && b && c) {
+        console.log('phoneLogin goi right ...')
       }
+    },
+    getCode() {
+      this.$refs.phoneitem.validate(res => {
+        if (res) {
+          console.log('validate go right')
+          //this.$http.get()
+        } else {
+          console.log('wrong')
+        }
+      })
+    },
+    handleClick(){}
   }
 };
 </script>
@@ -134,7 +217,7 @@ html {
 }
 .login-left {
     margin: auto;
-    width: 50%;
+    width: 45%;
 }
 .login-form {
   width: 30%;
