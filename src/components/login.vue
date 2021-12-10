@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-01 09:51:22
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-09 22:04:11
+ * @LastEditTime: 2021-12-10 16:46:55
  * @Description: 
 -->
 
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+
 export default {
   name: "PurchasingPlatformVueLogin",
   components: {

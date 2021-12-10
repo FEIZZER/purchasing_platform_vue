@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-05 20:51:41
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-06 16:51:33
+ * @LastEditTime: 2021-12-10 18:31:38
  * @Description: 
 -->
 <template>
@@ -22,7 +22,9 @@
                     </span>
                 </span>
             </el-tree>
-            <el-button @click="addAdmin" type="primary" size="mini" style="margin-top: 15px;margin-bottom: 20px">添加</el-button>
+            <el-button @click="addAdmin" type="primary" size="mini" 
+                                        style="margin-top: 15px;margin-bottom: 20px">
+                添加</el-button>
             <div class="block">
                 <el-pagination layout="prev, pager, next" :total="admins.length">
                 </el-pagination>
@@ -55,10 +57,10 @@
                 <el-descriptions-item label="组织">
                     {{detail.organizeName}}
                 </el-descriptions-item>
-                <el-descriptions-item label="密码" :span="3">{{detail.password}}</el-descriptions-item>
                 <el-descriptions-item label="管辖商品" :span="3">
-                    <el-tag style="margin-right: 5px" size="mini" v-for="type in detail.productTypes" :key="type">
-                        {{type}}
+                    <el-tag style="margin-right: 5px" size="mini" v-for="type in detail.productTypes" 
+                                    :key="type.productType">
+                        {{type.productType}}
                     </el-tag>
                 </el-descriptions-item>
                 <el-descriptions-item label="备注" :span="3">
@@ -74,30 +76,31 @@
         </el-dialog>
 
         <el-dialog :visible.sync="editVisible" :title="detailTitle">
-            <el-form :model="detailEdit">
-                <el-form-item label="账户名" label-width="80px">
+            <el-form :model="detailEdit" ref="editForm" :rules="Rules">
+                <el-form-item label="账户名" label-width="80px" prop="username">
                     <el-input v-model="detailEdit.username"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" label-width="80px">
+                <el-form-item label="密码" label-width="80px" v-if="isEditNew"  prop="password">
                     <el-input v-model="detailEdit.password"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号" label-width="80px">
+                <el-form-item label="手机号" label-width="80px" prop="mobilePhone">
                     <el-input v-model="detailEdit.mobilePhone"></el-input>
                 </el-form-item>
-                <el-form-item label="组织" label-width="80px">
+                <el-form-item label="组织" label-width="80px" prop="organizeName">
                     <el-select v-model="detailEdit.organizeName">
                         <el-option v-for="org in orgOptions" :key="org.id" :label="org.organizeName"
-                                    :value="org.organizeName">
+                                    :value="org.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="产品目录" label-width="80px">
-                    <el-tag style="margin-right: 6px"  closable @close="handleClose(type)"
-                                v-for="type in detailEdit.productTypes" :key="type">
-                        {{type}}
-                    </el-tag>
+                <el-form-item label="产品目录" label-width="80px" prop="productTypes">
+                    <el-select multiple v-model="detailEdit.productTypes">
+                        <el-option v-for="option in productOptions" :key="option.id" :value="option.id" :label="option.productType">
+                            {{option.productType}}
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="备注" label-width="80px">
+                <el-form-item label="备注" label-width="80px" prop="description">
                     <el-input v-model="detailEdit.description"></el-input>
                 </el-form-item>
                 <el-form-item label-width="80px" label=" "> 
@@ -118,6 +121,7 @@ export default {
             purchaseTable:[],
             admins:[],
             orgOptions: [],
+            productOptions: [],
             treeProp:{
                 label: 'username',
             },
@@ -128,7 +132,34 @@ export default {
             detail:{},
             detailId: '',
             detailEdit: {},
-            tableDetail: {}
+            tableDetail: {},
+
+
+
+            Rules: {
+                username: [
+                    {required: true, message: '请输入用户名', trigger: 'blur'}
+                ],
+                password: [
+                    {required: true,min: 6, max: 20, message: '密码长度在6~20，必须包含数字小写字母和一个特殊符号',
+                            trigger: ['blur', 'changed']}
+                ],
+                mobilePhone: [
+                    {required: true, message: '请输入手机号', trigger: 'blur'},
+                    {pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, 
+                                message: '请输入正确的手机号', trigger: 'blur'}
+                ],
+                organizeName: [
+                    {required: true, message: '组织不能为空', trigger: 'blur'}
+                ],
+                productTypes: [
+                    {required: true, message: '产品类型不能为空',trigger: 'blur'}
+                ],
+                description: [
+                    {required: true, message: '请添加适当的描述', trigger: 'blur'}
+                ],
+                
+            }
         };
     },
     created() {
@@ -139,6 +170,16 @@ export default {
     },
 
     methods: {
+        getAllProductions() {
+            this.$http.get('/getProductTypeBriefInfos')
+            .then(res => {
+                console.log(res)
+                let data = res.data
+                if (data.success) {
+                    this.productOptions = data.data
+                }
+            })
+        },
         getAllOrg() {
             this.$http.get('/getAllOrganizationInfos')
             .then(res => {
@@ -150,47 +191,75 @@ export default {
         },
         addAdmin() {
             this.getAllOrg()
+            this.getAllProductions()
             this.editVisible = true
             this.detailEdit = {}
             this.detailTitle = '添加新管理员',
             this.isEditNew = true
         }, 
-        handleClose(tag) {
-            console.log('close')
-            this.detailEdit.productTypes.splice(this.detailEdit.productTypes.indexOf(tag), 1)
-        },
         submitEdit() {
             //新增的管理员 方法
             if (this.isEditNew) {
-                let params = {}
-                params.username = this.detailEdit.username
-                params.password = this.detailEdit.password
-                params.mobilePhone = this.detailEdit.mobilePhone
-                params.organizeName = this.detailEdit.organizeName
-                params.productTypes = this.detailEdit.productTypes || ["蛋白质"]
-                params.description = this.detailEdit.description
-                console.log(params)
-                this.$http({
-                    url: '/addManagerInfo',
-                    method: 'post',
-                    data: {
-                        username: this.detailEdit.username,
-                        password: '123456',
-                        mobilePhone: this.detailEdit.mobilePhone,
-                        organizeName: this.detailEdit.organizeName,
-                        productTypes: this.detailEdit.productTypes || ['蛋白质'],
-                        description: this.detailEdit.description
-                    },
-                })
-                .then(res => {
-                    console.log(res)
-                })
-                .catch(err => {
-                    console.error(err)
+                this.$refs.editForm.validate(res => {
+                    this.$http({
+                        url: '/addManagerInfo',
+                        method: 'post',
+                        data: {
+                            username: this.detailEdit.username,
+                            password: '123456',
+                            mobilePhone: this.detailEdit.mobilePhone,
+                            organizeName: this.detailEdit.organizeName,
+                            productTypes: this.detailEdit.productTypes,
+                            description: this.detailEdit.description
+                        },
+                    })
+                    .then(res => {
+                        let data = res.data
+                        if (data.success) {
+                            this.editVisible = false
+                            this.detailVisible = false
+                            this.getAdmins()
+                        }
+                        else{
+                            this.$message({
+                                type: 'warning',
+                                message: data.msg
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
                 })
             }   
             else{
-
+                this.$refs.editForm.validate(res => {
+                    if (res) {
+                        console.log(this.detailEdit)
+                        this.$http({
+                            method: 'put',
+                            data: this.detailEdit,
+                            url: '/updateManagerInfo'
+                        })
+                        .then(res => {
+                            let data = res.data
+                            if (data.success) {
+                                this.editVisible = false
+                                this.detailVisible = false
+                                this.getAdmins()
+                            }
+                            else{
+                                this.$message({
+                                    type: 'warning',
+                                    message: data.msg
+                                })
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        })
+                    }
+                })
             }
         },
         cancel() {
@@ -201,13 +270,34 @@ export default {
             }
         },
         editDialog() {
+            this.getAllOrg()
+            this.getAllProductions()
             this.editVisible = true
             this.detailVisible = false
             this.isEditNew = false
             this.detailEdit = this.detail
+            let types_to_id = [];
+            this.detailEdit.productTypes.forEach(element => {
+                types_to_id.push(element.id)
+            });
+            this.detailEdit.productTypes = types_to_id
+            this.getOrgByName(this.detailEdit.organizeName)
+            console.log(this.detailEdit)  
+        },
+        getOrgByName(name) {
+            this.$http.get('/getAllOrganizationInfosByPageAndConditions', {
+                params: {
+                    page: 1,
+                    pageSize: 1,
+                    queryConditions: name
+                }
+            })
+            .then(res => {
+                this.detailEdit.organizeName = res.data.data.organizations[0].id
+            })
         },
         deleteAdmin() {
-            console.log(this.detailId)
+
             this.$http( {
                 url: '/deleteManagerInfo',
                 method: 'delete',
@@ -217,7 +307,6 @@ export default {
                 timeout: 100
             })
             .then(res => {
-                console.log(res)
                 let data = res.data
                 if (data.success) {
                     this.$message({
@@ -240,7 +329,6 @@ export default {
 
         },
         changeTable(data) {
-            console.log(data)
             this.tableDetail = data
         },
         getAdmins() {
@@ -265,7 +353,6 @@ export default {
                 }
             })
             .then(res => {
-                console.log(res)
                 let data = res.data
                 if (data.code == 200) {
                     this.detail = data.data
