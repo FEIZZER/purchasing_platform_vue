@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 15:08:21
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-10 21:00:07
+ * @LastEditTime: 2021-12-11 13:32:34
  * @Description: 
 -->
 <template>
@@ -15,7 +15,7 @@
                 <el-input v-model="formData.companyPhone"></el-input>
             </el-form-item>
             <el-form-item label="公司传真" prop="companyFax">
-                <el-input v-model="formData.companyTex"></el-input>
+                <el-input v-model="formData.companyFax"></el-input>
             </el-form-item>
             <el-form-item label="法人代表" prop="corporateRepresentative">
                 <el-input v-model="formData.corporateRepresentative"></el-input>

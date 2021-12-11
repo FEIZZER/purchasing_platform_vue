@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 11:42:23
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-10 21:47:24
+ * @LastEditTime: 2021-12-11 13:55:03
  * @Description: 
 -->
 <template>
@@ -62,7 +62,9 @@ export default {
                      message: '请输入正确的手机号', trigger: 'blur'}
                 ],
                 email: [
-                    {required: true, message: '请输入您的邮箱' ,trigger: 'blur'}
+                    {required: true, message: '请输入您的邮箱' ,trigger: 'blur'},
+                    {pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+                                message: '请输入正确的邮箱格式', trigger: 'blur'}
                 ],
                 password: [
                     {required: true, min: 6, max: 20, message: '请输入6~20位的密码', trigger: 'blur'}

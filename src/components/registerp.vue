@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 11:06:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-10 22:19:34
+ * @LastEditTime: 2021-12-11 13:45:18
  * @Description: 
 -->
 <template>
@@ -14,12 +14,14 @@
                 <el-steps :active="active" finish-status="success">
                 <el-step title="用户信息"></el-step>
                 <el-step title="公司信息"></el-step>
+                <el-step title="相关证照"></el-step>
                 <el-step title="其他信息"></el-step>
                 </el-steps>
             </div>
             <register-form-p @next-step1="next1" v-if="active == 0"></register-form-p>
             <register-form-p1 @next-step2="next2" v-if="active == 1"></register-form-p1>
-            <registerf-form-p2 @next-step3="next3" v-if="active == 2"></registerf-form-p2>
+            <register-form-p2 @next-step3="next3" v-if="active == 2"> </register-form-p2>
+            <registerf-form-p3 @next-step4="next4" v-if="active == 3"></registerf-form-p3>
         </div>
         
     </div>
@@ -28,12 +30,14 @@
 <script>
 import RegisterFormP from './insideComponent/registerFormp.vue'
 import RegisterFormP1 from './insideComponent/registerFormp1.vue'
-import RegisterfFormP2 from './insideComponent/registerFormp2.vue'
+import RegisterFormP2 from './insideComponent/registerFormp2.vue'
+import RegisterfFormP3 from './insideComponent/registerFormp3.vue'
 export default {
     name: 'PurchasingPlatformVueRegisterp',
     components: {
         RegisterFormP,
-        RegisterfFormP2,
+        RegisterfFormP3,
+        RegisterFormP2,
         RegisterFormP1
     },
     data() {
@@ -47,12 +51,12 @@ export default {
         
     },
     created() {
-        if (sessionStorage.getItem('register-p-page')) {
-            Object.assign(this.$data, JSON.parse(sessionStorage.getItem('register-p-page')))
-        }
-        window.addEventListener("beforeunload",()=>{
-            sessionStorage.setItem("register-p-page",JSON.stringify(this.$data));
-        });
+        // if (sessionStorage.getItem('register-p-page')) {
+        //     Object.assign(this.$data, JSON.parse(sessionStorage.getItem('register-p-page')))
+        // }
+        // window.addEventListener("beforeunload",()=>{
+        //     sessionStorage.setItem("register-p-page",JSON.stringify(this.$data));
+        // });
     },
     methods: {
         next1(msg, data) {
@@ -66,7 +70,10 @@ export default {
             this.active = msg
             this.registerParams.companyInfo = data
         },
-        next3(msg, data) {
+        next3(msg) {
+            this.active = msg
+        },
+        next4(msg, data) {
             sessionStorage.setItem('registerData', JSON.stringify(this.registerParams))
             this.$http({
                 url: '/supplierRegister',
@@ -78,7 +85,9 @@ export default {
                 console.log(res)
                 let data = res.data
                 if (data.success) {
-                    console.log('okokokkok')
+                    setTimeout(function() {
+                        this.$router.push('/login')
+                    }, 5000)
                 }
                 else{
                     this.$message({

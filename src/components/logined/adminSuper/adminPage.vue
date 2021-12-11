@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-05 20:51:41
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-10 18:31:38
+ * @LastEditTime: 2021-12-11 15:19:36
  * @Description: 
 -->
 <template>
@@ -206,7 +206,7 @@ export default {
                         method: 'post',
                         data: {
                             username: this.detailEdit.username,
-                            password: '123456',
+                            password: this.detailEdit.password,
                             mobilePhone: this.detailEdit.mobilePhone,
                             organizeName: this.detailEdit.organizeName,
                             productTypes: this.detailEdit.productTypes,
