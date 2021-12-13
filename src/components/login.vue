@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-01 09:51:22
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 15:20:33
+ * @LastEditTime: 2021-12-13 19:54:58
  * @Description: 
 -->
 
@@ -87,7 +87,6 @@
 export default {
   name: "PurchasingPlatformVueLogin",
   components: {
-      
   },
   data() {
     return {
@@ -119,7 +118,6 @@ export default {
           {required: true, message: '请输入手机号', trigger: 'blur'},
           {pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, 
                      message: '请输入正确的手机号', trigger: 'blur'}
-          
         ],
         verifyCode: [
           {required: true, message: '请输入验证码', trigger: 'blur'}
@@ -142,6 +140,9 @@ export default {
           .then(res => {
             let data = res.data
             if (data.success) {
+              //addAsyncRoutes()
+              localStorage.setItem('token', JSON.stringify(data.data))
+              localStorage.setItem('role', JSON.stringify(this.accountData.roleType))
               this.$router.push({
                 path: 'home'
               })

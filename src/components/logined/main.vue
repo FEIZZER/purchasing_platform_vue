@@ -2,12 +2,14 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-06 10:35:45
+ * @LastEditTime: 2021-12-13 21:14:48
  * @Description: 
 -->
 <template>
   <el-container class="out-container">
-    <el-header>Header</el-header>
+    <el-header>
+      <el-button @click="logout">退出</el-button>
+    </el-header>
     <el-container class="inside-container">
       <el-aside width="200px">
         <el-menu router default-active="1" class="el-menu-vertical-demo" @open="handleOpen" text-color="#fff"
@@ -37,14 +39,15 @@
             <i class="el-icon-s-data"></i>
             <span>发布标案</span>
           </el-menu-item>
-           <el-menu-item index="6" route="/home/adminpage">
-            <i class="el-icon-s-data"></i>
-            <span>管理员列表</span>
-          </el-menu-item>
-           <el-menu-item index="7" route="/home/orgnizationpage">
-            <i class="el-icon-s-data"></i>
-            <span>组织列表</span>
-          </el-menu-item>
+          <el-submenu v-for="(menu, index) in thismenus" :key="index" :index="menu.name">
+             <template slot="title">
+               <span>{{menu.name}}</span>
+             </template>
+             <el-menu-item v-for="submenu in menu.childrens" :key="submenu.name" :index="submenu.name"
+                  :route="'/home'+submenu.route">
+               <span>{{submenu.name}}</span>
+             </el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-main class="main-area">
@@ -55,23 +58,39 @@
 </template>
 
 <script>
-
+import {menus, createRouter, addAsyncRoutes} from '@/router/index.js'
 export default {
   name: "PurchasingPlatformVueMain",
   components: {
-
+    menus,
+    createRouter,
+    addAsyncRoutes
   },
   data() {
-    return {};
+    return {
+      thismenus:[]
+    };
   },
 
   mounted() {
+    createRouter()
+    addAsyncRoutes()
+    this.thismenus = menus
   },
+  created() {
 
+  },
   methods: {
     handleOpen() {},
     handleClose(){},
-    isCollapse(){}
+    isCollapse(){},
+    logout() {
+      localStorage.clear()
+      createRouter()
+      this.$router.push({
+        path: 'login'
+      })
+    }
   }
 };
 </script>

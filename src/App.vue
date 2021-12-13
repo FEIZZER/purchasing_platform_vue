@@ -5,9 +5,18 @@
 </template>
 
 <script>
+import {addAsyncRoutes} from '@/router/index.js'
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    addAsyncRoutes
+  },
+
+  created() {
+    addAsyncRoutes()
+  }
 }
+
 </script>
 
 <style>
