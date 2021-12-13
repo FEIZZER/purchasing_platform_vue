@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 22:25:12
+ * @LastEditTime: 2021-12-13 22:50:48
  * @Description: 
 -->
 <template>
@@ -51,6 +51,8 @@ export default {
     createRouter()
     addAsyncRoutes()
     this.thismenus = menus
+
+    this.getAccountInfo()
   },
   created() {
 
@@ -63,6 +65,24 @@ export default {
       localStorage.clear()
       this.$router.push({
         path: 'login'
+      })
+    },
+    getAccountInfo() {
+      this.$http.get('/getUserInfoByToken', {
+        headers: {
+          Authorization: JSON.parse(localStorage.getItem('token'))
+        }
+      })
+      .then(res => {
+        let data = res.data
+        if (data.success) {
+          localStorage.setItem('account', JSON.stringify(data.data))
+        }else{
+          this.$message({
+            type:'warning',
+            message:data.msg
+          })
+        }
       })
     }
   }
