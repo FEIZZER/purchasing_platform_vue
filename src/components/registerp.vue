@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 11:06:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-11 13:45:18
+ * @LastEditTime: 2021-12-13 15:42:35
  * @Description: 
 -->
 <template>
@@ -57,6 +57,9 @@ export default {
         // window.addEventListener("beforeunload",()=>{
         //     sessionStorage.setItem("register-p-page",JSON.stringify(this.$data));
         // });
+        this.$router.push({
+                path: '/login'
+              })
     },
     methods: {
         next1(msg, data) {
@@ -73,21 +76,27 @@ export default {
         next3(msg) {
             this.active = msg
         },
-        next4(msg, data) {
+        next4(data1, date2, date3) {
             sessionStorage.setItem('registerData', JSON.stringify(this.registerParams))
+            this.registerParams.contacts = data1
+            this.registerParams.products = date2
+            this.registerParams.cumtomers = date3
+            console.log(this.registerParams)
             this.$http({
                 url: '/supplierRegister',
                 method: 'post',
                 data: this.registerParams
             })
             .then(res => {
-
-                console.log(res)
                 let data = res.data
                 if (data.success) {
-                    setTimeout(function() {
-                        this.$router.push('/login')
-                    }, 5000)
+                    this.$message({
+                        type: 'success',
+                        message: '您的注册信息已提交'
+                    })
+                    this.$router.push({
+                        path: '/wait'
+                    })
                 }
                 else{
                     this.$message({

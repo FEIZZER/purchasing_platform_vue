@@ -2,13 +2,13 @@
  * @Author: feizzer
  * @Date: 2021-11-03 15:08:44
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-11 13:42:44
+ * @LastEditTime: 2021-12-13 14:44:38
  * @Description: 
 -->
 <template>
 <div>
     <div class="form-box">
-        <el-form ref="liaisonForm" :rules="rules" :model="contacts" label-position="left" label-width="95px">
+        <el-form ref="liaisonForm" :rules="rules" :model="contacts" label-position="left" label-width="95px" hide-required-asterisk>
                 <p>联系人信息</p>
                 <el-form-item label="联系人姓名" prop="contactName">
                     <el-input v-model="contacts.contactName"></el-input>
@@ -16,13 +16,13 @@
                 <el-form-item label="手机号" prop="contactPhone">
                     <el-input v-model="contacts.contactPhone"></el-input>
                 </el-form-item>
-                <el-form-item label="座机号">
+                <el-form-item label="座机号" prop="contactTelephone">
                     <el-input v-model="contacts.contactTelephone"></el-input>
                 </el-form-item>
-                <el-form-item label="传真号">
+                <el-form-item label="传真号" prop="contactFax">
                     <el-input v-model="contacts.contactFax"></el-input>
                 </el-form-item>
-                <el-form-item label="电子邮箱">
+                <el-form-item label="电子邮箱" prop="contactEmail">
                     <el-input v-model="contacts.contactEmail"></el-input>
                 </el-form-item>
                 <el-form-item label="备注">
@@ -38,7 +38,7 @@
                     <el-button @click="addcontacts">+添加联系人</el-button>
                 </el-form-item>
         </el-form>
-        <el-form ref="productForm" :rules="rules" :model="products" label-position="left" label-width="80px">
+        <el-form ref="productForm" :rules="rules" :model="products" label-position="left" label-width="80px" hide-required-asterisk>
                 <p>公司主要产品</p>
                 <el-form-item label="产品名称" prop="companyProduct">
                     <el-input v-model="products.companyProduct"></el-input>
@@ -66,22 +66,22 @@
                     <el-button @click="addproducts">+添加主要产品</el-button>
                 </el-form-item>
         </el-form>
-        <el-form ref="customForm" :rules="rules" :model="custom" label-position="left" label-width="80px">
+        <el-form ref="customForm" :rules="rules" :model="custom" label-position="left" label-width="80px"  hide-required-asterisk>
                 <p>公司主要客户</p>
-                <el-form-item label="客户名称" prop="name">
-                    <el-input v-model="custom.name"></el-input>
+                <el-form-item label="客户名称" prop="customerName">
+                    <el-input v-model="custom.customerName"></el-input>
                 </el-form-item>
-                <el-form-item label="联系人" prop="name">
-                    <el-input v-model="custom.contactsName"></el-input>
+                <el-form-item label="联系人" prop="customerContactUser">
+                    <el-input v-model="custom.customerContactUser"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话" prop="phonenum">
-                    <el-input v-model="custom.phonenum"></el-input>
+                <el-form-item label="联系电话" prop="customerContactPh">
+                    <el-input v-model="custom.customerContactPh"></el-input>
                 </el-form-item>
                 <el-form-item label="备注">
-                    <el-input v-model="custom.remarks"></el-input>
+                    <el-input v-model="custom.clinetRemark"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-tag @click="deleteCustom(cus)" style="margin:0 1px;" closable v-for="cus in customs" 
+                    <el-tag @close="deleteCustom(cus)" style="margin:0 1px;" closable v-for="cus in customers" 
                                                     :key="cus.customerName">
                         {{cus.customerName}}
                     </el-tag>
@@ -123,23 +123,52 @@ export default {
                 companyRemark: ''
             },
             custom: {
-                name: '',
-                contactsName: '',
-                phonenum: '',
-                remarks: '',
+                customerName: '',
+                customerContactUser: '',
+                customerContactPh: '',
+                clinetRemark: '',
             },
             contactss:[],
             productss: [],
-            customs: [],
+            customers: [],
             rules: {
                 contactName: [
                     {required: true, message: '请输入合适的信息', trigger: 'blur'}
                 ],
                 contactPhone: [
-                    {required: true, message: '请输入合适的信息', trigger: 'blur'},
+                    {required: true, message: '请输入手机号', trigger: 'blur'},
                     {pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, 
                      message: '请输入正确的手机号', trigger: 'blur'}
-                ]
+                ],
+                contactTelephone: [
+                    {pattern: /(^[0][1-9]{2,3}-[0-9]{5,10}$)|(^[1-9]{1}[0-9]{5,8}$)/, 
+                        required: true, message: '请填写正确的固话信息', trigger: 'blur'}
+                ],
+                contactFax: [
+                    {pattern: /^(?:\d{3,4}-)?\d{7,8}(?:-\d{1,6})?$/, 
+                     required: true, message: '请输入正确的传真信息', trigger: 'blur'}
+                ],
+                contactEmail:[
+                    {pattern: /^\b[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,6}\b$/, required: true,
+                                message: '请输入正确的邮箱格式', trigger: 'blur'}
+                ],
+
+                companyProduct: [
+                    {required: true, message: '请输入产品名称', trigger: 'blur'}
+                ],
+
+                customerName:[
+                    {required: true, message: '请输入客户名字', trigger: 'blur'}
+                ],
+                customerContactUser: [
+                    {required: true, message: '请输入联系人的名字', trigger: 'blur'}
+                ],
+                customerContactPh:[
+                    {pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, 
+                     required: true, message: '请输入正确的手机号', trigger: 'blur'}
+                ],
+
+
             }
         };
     },
@@ -182,12 +211,13 @@ export default {
             })
         },
         deleteCustom(custom){
-            this.customs.splice(this.customs.indexOf(custom), 1)
+            this.customers.splice(this.customers.indexOf(custom), 1)
         },
         addCustom() {
             this.$refs.customForm.validate(res=>{
                 if (res) {
-                    this.customs.push(this.custom)
+                    let full = JSON.parse(JSON.stringify(this.custom))
+                    this.customers.push(full)
                 } else{
                     this.$message({
                         message: '输入必要信息后才能添加客户信息',
@@ -197,7 +227,7 @@ export default {
             })
         },
         doRegister() {
-            this.$emit('next-step4')
+            this.$emit('next-step4',this.contactss, this.productss, this.customers)
         }
     },
 };
