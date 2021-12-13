@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 15:22:33
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 15:40:10
+ * @LastEditTime: 2021-12-13 16:08:50
  * @Description: 
 -->
 <template>
@@ -24,6 +24,7 @@ export default {
     data() {
         return {
             time: 5,
+            timer: ''
         };
     },
 
@@ -33,17 +34,23 @@ export default {
     created() {
         this.do()
     },
+    beforeDestroy() {
+        clearInterval(this.timer)
+    },
     methods: {
         do () {
             this.time = 5
-            setInterval(() => {
+            this.timer = setInterval(() => {
                 this.time = this.time - 1
                 if (this.time <= 0) {
+                    this.time = 5
                     this.$router.push({
                         path: '/login'
                     })
                 }
             }, 1000);
+
+
         }
     },
 };
