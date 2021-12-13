@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 16:13:42
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 21:24:05
+ * @LastEditTime: 2021-12-13 22:21:43
  * @Description: 
  */
 export const superMenus = [
@@ -67,31 +67,17 @@ export const purchaseMenus = [
             {name: '定标管理', route: '/projectdown'},
         ]
     },
-    {
-        name:'我的账户',
-        childrens: [
-            {name: '消息中心'},
-            {name: '账户信息'}
-        ]
-    }
 ]
 
 export const supplierMenus = [
     {
         name: '申请管理',
         childrens: [
-            {name: '资质申请'},
-            {name: '我的资质'},
-            {name: '投标申请'},
-            {name: '预约管理'},
-            {name: '竞标管理'}
+            {name: '资质申请', route: '/applyauthor'},
+            {name: '我的资质', route: '/appliedauthor'},
+            {name: '投标申请', route: '/productinneed'},
+            {name: '邀约管理', route: '/manageinvitation'},
+            {name: '竞标管理', route: '/producttocom'}
         ]
     },
-    {
-        name:'我的账户',
-        childrens: [
-            {name: '消息中心'},
-            {name: '账户信息'}
-        ]
-    }
 ]

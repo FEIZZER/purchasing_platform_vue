@@ -4,32 +4,13 @@ import Login from "@/components/login.vue"
 import Index from '@/components/index.vue'
 import Registerp from '@/components/registerp.vue'
 import Wait from '@/components/wait.vue'
-
-
 import Main from '@/components/logined/main.vue'
-import Qualification from '@/components/logined/producter/qualification.vue'
-import Productindemand from '@/components/logined/producter/productInNeed_Table.vue'
-import ProductAccountInfo from '@/components/logined/producter/proAccountInfo.vue'
 
-import Message from '@/components/logined/messages.vue'
-import Integral from '@/components/logined/producter/integral.vue'
-import History from '@/components/logined/producter/history.vue'
-import ProductAuthorized from '@/components/logined/producter/productauthorized.vue'
+
+
 
 Vue.use(Router)
-// // 解决报错
-// const originalPush = Router.prototype.push
-// const originalReplace = Router.prototype.replace
-// // push
-// Router.prototype.push = function push (location, onResolve, onReject) {
-//   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-//   return originalPush.call(this, location).catch(err => err)
-// }
-// // replace
-// Router.prototype.replace = function push (location, onResolve, onReject) {
-//   if (onResolve || onReject) return originalReplace.call(this, location, onResolve, onReject)
-//   return originalReplace.call(this, location).catch(err => err)
-// }
+
 const constant = [
   {
     path: '/',
@@ -81,6 +62,26 @@ const supplier = [
     name: 'home',
     component:Main,
     children: [
+      {
+        path: 'applyauthor',
+        component: () => import('@/components/logined/producter/applyauthor.vue')
+      },
+      {
+        path: 'appliedauthor',
+        component: () => import('@/components/logined/producter/appliedauthor.vue')
+      },
+      {
+        path: 'productinneed',
+        component: () => import('@/components/logined/producter/productinneed.vue')
+      },
+      {
+        path: 'manageinvitation',
+        component: () => import('@/components/logined/producter/manageinvitation.vue')
+      },
+      {
+        path: 'producttocom',
+        component: () => import('@/components/logined/producter/producttocom.vue')
+      }
     ]
   }
 ]
