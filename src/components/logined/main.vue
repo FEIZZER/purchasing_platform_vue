@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-04 14:01:32
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-14 12:03:22
+ * @LastEditTime: 2021-12-14 19:33:50
  * @Description: 
 -->
 <template>
@@ -104,5 +104,8 @@ export default {
 .el-aside {
   background-color: #292D30;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.main-area{
+  padding: 50px;
 }
 </style>
