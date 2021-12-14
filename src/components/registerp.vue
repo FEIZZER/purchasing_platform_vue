@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-11-03 11:06:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 15:42:35
+ * @LastEditTime: 2021-12-14 14:38:33
  * @Description: 
 -->
 <template>
@@ -57,9 +57,6 @@ export default {
         // window.addEventListener("beforeunload",()=>{
         //     sessionStorage.setItem("register-p-page",JSON.stringify(this.$data));
         // });
-        this.$router.push({
-                path: '/login'
-              })
     },
     methods: {
         next1(msg, data) {

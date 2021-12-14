@@ -2,17 +2,27 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:54:57
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 22:55:24
+ * @LastEditTime: 2021-12-14 11:53:10
  * @Description: 
 -->
 <template>
     <div class="main">
         <el-table >
-            <el-table-column></el-table-column>
-            <el-table-column></el-table-column>
-            <el-table-column></el-table-column>
-            <el-table-column></el-table-column>
-            <el-table-column></el-table-column>
+            <el-table-column type="selection">
+
+            </el-table-column>
+            <el-table-column type="index">
+
+            </el-table-column>
+            <el-table-column>
+
+            </el-table-column>
+            <el-table-column>
+
+            </el-table-column>
+            <el-table-column>
+
+            </el-table-column>
         </el-table>
     </div>
 </template>
@@ -29,7 +39,8 @@ export default {
     },
 
     mounted() {
-        
+        this.initAccountInfo()
+        this.getPurchase()
     },
 
     methods: {
@@ -37,6 +48,7 @@ export default {
             this.accountInfo = JSON.parse(localStorage.getItem('account'))
         },
         getPurchase() {
+            console.log(this.accountInfo.accountId)
             this.$http.get('/getAllPurchasersByPage', {
                 params: {
                     managerId: this.accountInfo.accountId,
@@ -48,6 +60,7 @@ export default {
                 let data = res.data
                 if (data.success) {
                     this.purchases = data.data
+                    console.log(this.purchases)
                 }
                 else {
                     this.$message({
