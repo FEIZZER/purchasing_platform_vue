@@ -2,14 +2,14 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:54:57
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-15 17:26:43
+ * @LastEditTime: 2021-12-15 21:08:49
  * @Description: 
 -->
 <template>
     <div class="main">
         <div class="org-area" style="margin-bottom: 20px">
             <el-input v-model="searchIn" style="width:50%">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-button slot="append" icon="el-icon-search" @click="doSearch"></el-button>
             </el-input>
             <el-button @click="() =>{add_visible = true;getProductsByManagerId();getOrgByManagerId()}" 
                                 type="primary" size="small" class="left-button">新增</el-button>
@@ -155,6 +155,10 @@ export default {
     },
 
     methods: {
+        doSearch() {
+            this.search = this.searchIn
+            this.getPurchase()
+        },
         doDeletes() {
             this.selected_column.forEach(col => {
                 this.doDelete(col.id)
@@ -217,6 +221,7 @@ export default {
                 if (data.success) {
                     this.change_visible = true
                     this.changeForm = data.data
+                    console.log(this.changeForm)
                     this.changeFormater(this.changeForm)
                     console.log(this.changeForm)
                 }else{
@@ -266,7 +271,8 @@ export default {
             this.accountInfo = JSON.parse(localStorage.getItem('account'))
         },
         getPurchase() {
-            this.$http.get('/getAllPurchasersByPage', {
+            console.log(this.search)
+            this.$http.get('/getAllPurchasersByPageAndConditions', {
                 params: {
                     managerId: this.accountInfo.accountId,
                     page: this.page,
@@ -275,11 +281,11 @@ export default {
                 }
             })
             .then(res => {
+                console.log(res)
                 let data = res.data
                 if (data.success) {
                     this.purchases = data.data.purchaserInfos
                     this.total = data.data.totalCount
-                    console.log(this.total)
                 }
                 else {
                     this.$message({
@@ -337,6 +343,7 @@ export default {
                         type: 'success',
                         message: '删除成功'
                     })
+                    this.page = 1
                     this.getPurchase()
                 }else{
                     this.$message({
@@ -347,7 +354,8 @@ export default {
             })
         },
         changeFormater(obj) {
-            obj.organizeName = this.canManageOrg.find(org=>org.organizeName == obj.organizeName).id
+            let m = []
+            obj.organizeName = obj.organization.id
             let n = []
             obj.products.forEach(pro=>{n.push(pro.id)})
             obj.products = n

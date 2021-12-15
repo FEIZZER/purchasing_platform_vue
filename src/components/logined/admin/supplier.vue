@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:55:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-14 16:23:08
+ * @LastEditTime: 2021-12-15 17:50:05
  * @Description: 
 -->
 <template>
@@ -36,6 +36,8 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-pagination layout="prev, pager, next" :total="total"
+            @prev-click="prePage" @next-click="nextPage" @current-change="changePage"> </el-pagination>
         <el-dialog :visible.sync="detail_visible" title="详情">
             <el-descriptions title="" :column="3">
                 <el-descriptions-item label="用户名" :span="1">
@@ -124,7 +126,9 @@ export default {
             moreDetail: {},
             search: '',
             select: '0',
-            total:'',
+            total:0,
+            page:1,
+            pageSize: 10,
             selected_column: []
         };
     },
@@ -137,6 +141,15 @@ export default {
     methods: {
         doSearch() {
             //this.$http.get('')
+        },
+        prePage() {
+
+        },
+        nextPage() {
+
+        },
+        currentPage() {
+
         },
         doAudit(id, state) {
             this.$http({
@@ -180,8 +193,8 @@ export default {
         getUnauditsupplier() {
             this.$http.get('/getAllUnreviewedSupplierInfo', {
                 params:{
-                    page: 1,
-                    pageSize: 10
+                    page: this.page,
+                    pageSize: this.pageSize
                 }
             })
             .then(res => {
