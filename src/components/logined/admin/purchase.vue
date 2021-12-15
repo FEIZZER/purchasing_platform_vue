@@ -2,13 +2,13 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:54:57
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-15 21:08:49
+ * @LastEditTime: 2021-12-15 21:13:07
  * @Description: 
 -->
 <template>
     <div class="main">
         <div class="org-area" style="margin-bottom: 20px">
-            <el-input v-model="searchIn" style="width:50%">
+            <el-input v-model="searchIn" style="width:50%; margin-left: 30px">
                 <el-button slot="append" icon="el-icon-search" @click="doSearch"></el-button>
             </el-input>
             <el-button @click="() =>{add_visible = true;getProductsByManagerId();getOrgByManagerId()}" 
@@ -382,6 +382,6 @@ export default {
     margin-left: auto;
 }
 .right-button{
-    margin-right: 50px;
+    margin-right: 100px;
 }
 </style>

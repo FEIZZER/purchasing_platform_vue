@@ -2,17 +2,17 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:55:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-15 17:50:05
+ * @LastEditTime: 2021-12-15 22:36:26
  * @Description: 
 -->
 <template>
     <div class="main">
         <div class="op-area">
             <el-select v-model="select" style="margin-right: 10px">
-                <el-option label="未审核" value="0">已审核</el-option>
-                <el-option label="已审核" value="1">未审核</el-option>
+                <el-option label="未审核" value="0">未审核</el-option>
+                <el-option label="已审核" value="1">已审核</el-option>
             </el-select>
-            <el-input v-model="search" style="width: 50%;margin-right: 30px">
+            <el-input v-model="searchIn" style="width: 50%;margin-right: 30px">
                 <i slot="prepend"  class="el-icon-search"></i>
             </el-input>
             <el-button size="small" type="success" @click="doSearch">查询</el-button>
@@ -124,7 +124,8 @@ export default {
             detail_visible: false,
             moreDetail_visible: false,
             moreDetail: {},
-            search: '',
+            searchIn: '',
+            thing: '',
             select: '0',
             total:0,
             page:1,
@@ -132,26 +133,33 @@ export default {
             selected_column: []
         };
     },
-
     mounted() {
+
+    },
+    created() {
         this.initAccountInfo()
-        this.getUnauditsupplier()
+        this.getsupplier()
     },
 
     methods: {
         doSearch() {
-            //this.$http.get('')
+            this.thing = this.searchIn
+            this.getsupplier()
         },
-        prePage() {
-
+        prePage(page) {
+            this.page = page
+            this.getsupplier()
         },
-        nextPage() {
-
+        nextPage(page) {
+            this.page = page
+            this.getsupplier()
         },
-        currentPage() {
-
+        changePage(page) {
+            this.page = page
+            this.getsupplier()
         },
         doAudit(id, state) {
+            console.log(this.accountInfo.accountId, id, state)
             this.$http({
                 url: '/checkSupplierInfo',
                 method:  'put',
@@ -171,7 +179,12 @@ export default {
                         type: 'success',
                         message: '已通过该申请'
                     })
-                    this.getUnauditsupplier()
+                    this.getsupplier()
+                }else{
+                    this.$message({
+                        type: 'warning',
+                        message: data.msg
+                    })
                 }
             })
             .catch(res => {
@@ -190,15 +203,20 @@ export default {
             this.accountInfo = JSON.parse(localStorage.getItem('account'))
            
         },
-        getUnauditsupplier() {
-            this.$http.get('/getAllUnreviewedSupplierInfo', {
+        getsupplier() {
+            let url = this.select=='0'? '/getAllUnreviewedSupplierInfoByConditions' : '/getAllAuditedSupplierInfoByConditions'
+            this.$http({
+                method: 'get',
+                url: url,
                 params:{
                     page: this.page,
-                    pageSize: this.pageSize
+                    pageSize: this.pageSize,
+                    queryConditions: this.thing
                 }
             })
             .then(res => {
                 let data = res.data
+               
                 if (data.success) {
                     this.suppliers = data.data.supplierInfos
                     this.total = data.data.totalCount
@@ -243,7 +261,6 @@ export default {
                     this.moreDetail = data.data
                     this.moreDetail_visible = true
                     this.detail_visible = false
-                    console.log(this.moreDetail)
                 }
                 else{
                     this.$message({
