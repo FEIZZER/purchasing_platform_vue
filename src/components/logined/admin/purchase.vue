@@ -2,34 +2,38 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:54:57
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-14 22:43:20
+ * @LastEditTime: 2021-12-15 17:26:43
  * @Description: 
 -->
 <template>
     <div class="main">
         <div class="org-area" style="margin-bottom: 20px">
-            <el-input v-model="search" style="width:50%">
+            <el-input v-model="searchIn" style="width:50%">
                 <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
             <el-button @click="() =>{add_visible = true;getProductsByManagerId();getOrgByManagerId()}" 
                                 type="primary" size="small" class="left-button">新增</el-button>
-            <el-button  type="danger" size="small" class="right-button" >删除</el-button>
+            <el-button  type="danger" size="small" class="right-button" @click="doDeletes">删除</el-button>
         </div>
-        <el-table >
+        <el-table :data="purchases" border @selection-change="handleChange">
             <el-table-column type="selection">
             </el-table-column>
-            <el-table-column type="index" label="序号">
+            <el-table-column type="index" label="序号" width="60px" align="center">
             </el-table-column>
-            <el-table-column label="用户名">
-
+            <el-table-column label="用户名" prop="username" align="center">
             </el-table-column>
-            <el-table-column label="手机号" >
-
+            <el-table-column label="手机号" prop="mobilePhone" align="center">
             </el-table-column>
-            <el-table-column label="操作" >
-
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="success" size="mini" @click="showChange(scope.row.id)">修改</el-button>
+                    <el-button type="danger" size="mini" @click="doDelete(scope.row.id)">删除</el-button>
+                </template>
+                
             </el-table-column>
         </el-table>
+        <el-pagination layout="prev, pager, next" :total="total"
+            @prev-click="prePage" @next-click="nextPage" @current-change="changePage"> </el-pagination>
         <el-dialog :visible.sync="add_visible" title="新增采购员信息">
             <el-form :model="addForm" :rules="rules" ref="addform">
                 <el-form-item label="账户名" label-width="80px" prop="username">
@@ -54,12 +58,45 @@
                                 :label="pro.productName" :value="pro.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="角色描述" label-width="80px">
+                <el-form-item label="角色描述" label-width="80px" prop="description">
                     <el-input v-model="addForm.description"></el-input>
                 </el-form-item>
                 <el-form-item label="" label-width="80px">
                     <el-button type="primary" @click="submitNew">提交</el-button>
                     <el-button type="info" @click="()=>{add_visible=false;addForm={}}">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <el-dialog :visible.sync="change_visible" title="修改采购员信息">
+            <el-form :model="changeForm" :rules="rules" ref="changeForm">
+                <el-form-item label="编号" label-width="80px">
+                    <el-input disabled v-model="changeForm.id"></el-input>
+                </el-form-item>
+                <el-form-item label="账户名" label-width="80px" prop="username">
+                    <el-input v-model="changeForm.username"> </el-input>
+                </el-form-item>
+                <el-form-item label="手机号" label-width="80px" prop="mobilePhone">
+                    <el-input v-model="changeForm.mobilePhone"> </el-input>
+                </el-form-item>
+                <el-form-item label="组织" label-width="80px" prop="organizeName">
+                    <el-select v-model="changeForm.organizeName">
+                        <el-option v-for="org in canManageOrg" :key="'c'+org.id" 
+                                :value="org.id" :label="org.organizeName">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="职能" label-width="80px" prop="products">
+                    <el-select v-model="changeForm.products" :multiple-limit="6" multiple>
+                        <el-option v-for="pro in canManagePros" :key="'c'+pro.id"
+                                :label="pro.productName" :value="pro.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="角色描述" label-width="80px" prop="description">
+                    <el-input v-model="changeForm.description"></el-input>
+                </el-form-item>
+                <el-form-item label="" label-width="80px">
+                    <el-button type="primary" @click="submitChange">提交</el-button>
+                    <el-button type="info" @click="()=>{change_visible=false;}">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -76,11 +113,16 @@ export default {
             accountInfo:{},
             add_visible: false,
             addForm: {},
+            change_visible: false,
+            changeForm:{},
+            searchIn: '',
             search: '',
             canManagePros: [],
             canManageOrg: [],
-
-
+            total: 0,
+            page:1,
+            pageSize:10,
+            selected_column: [],
             rules: {
                 username: [
                     {required: true, message: '请输入用户名', trigger: 'blur'}
@@ -98,6 +140,9 @@ export default {
                 ],
                 products: [
                     {required: true, message: '请选择至少一个职能', trigger: 'blur'}
+                ],
+                description: [
+                    {required: true, message: '请输入适当的描述信息', trigger: 'blur'}
                 ]
             }
 
@@ -110,19 +155,101 @@ export default {
     },
 
     methods: {
+        doDeletes() {
+            this.selected_column.forEach(col => {
+                this.doDelete(col.id)
+            })
+        },
+        handleChange(val) {
+            this.selected_column = val
+            console.log(this.selected_column)
+        },
+        prePage(page) {
+            this.page = page
+            this.getPurchase()
+        },
+        nextPage(page) {
+            this.page = page
+            this.getPurchase()
+        },
+        changePage(page) {
+            this.page = page
+            this.getPurchase()
+        },
+        submitChange() {
+            console.log(this.changeForm)
+            this.$http.put('/updatePurchaserById', {
+                id: this.changeForm.id,
+                username: this.changeForm.username,
+                mobilePhone: this.changeForm.mobilePhone,
+                organizeName:this.changeForm.organizeName,
+                products: this.changeForm.products,
+                description: this.changeForm.description
+            })
+            .then(res => {
+                console.log(res)
+                let data = res.data
+                if (data.success) {
+                    this.$message({
+                        type:'success',
+                        message: '修改信息成功'
+                    })
+                    this.change_visible = false
+                    this.getPurchase()
+                }else{
+                    this.$message({
+                        type: 'warning',
+                        message: data.msg
+                    })
+                }
+            })
+        },
+        showChange(id){
+            this.getOrgByManagerId()
+            this.getProductsByManagerId()
+            this.$http.get('/getPurchaserById', {
+                params:{
+                    purchaserId: id
+                }
+            })
+            .then(res => {
+                let data = res.data
+                if (data.success) {
+                    this.change_visible = true
+                    this.changeForm = data.data
+                    this.changeFormater(this.changeForm)
+                    console.log(this.changeForm)
+                }else{
+                    this.$message({
+                        type: 'warning',
+                        message: data.msg + ',获取信息失败，稍后再试！'
+                    })
+                }
+            })
+        },
         submitNew() {
             this.$http({
                 url: '/addPurchaser',
                 method: 'post',
-                data: this.addForm
+                data: {
+                    username: this.addForm.username,
+                    password: this.addForm.password,
+                    mobilePhone: this.addForm.mobilePhone,
+                    products: this.addForm.products,
+                    organizeName: this.addForm.organizeName,
+                    description: this.addForm.description,
+                    managerId: this.accountInfo.accountId,
+                }
             })
             .then(res => {
                 let data = res.data
                 if (data.success) {
                     this.$message({
-                        type: 'warning',
+                        type: 'success',
                         message: '新增完成'
                     })
+                    this.add_visible = false
+                    this.getPurchase()
                 }
                 else{
                     this.$message({
@@ -139,19 +266,20 @@ export default {
             this.accountInfo = JSON.parse(localStorage.getItem('account'))
         },
         getPurchase() {
-            console.log(this.accountInfo.accountId)
             this.$http.get('/getAllPurchasersByPage', {
                 params: {
                     managerId: this.accountInfo.accountId,
-                    page: 1,
-                    pageSize: 10
+                    page: this.page,
+                    pageSize: this.pageSize,
+                    queryConditions: this.search
                 }
             })
             .then(res => {
                 let data = res.data
                 if (data.success) {
-                    this.purchases = data.data
-                    console.log(this.purchases)
+                    this.purchases = data.data.purchaserInfos
+                    this.total = data.data.totalCount
+                    console.log(this.total)
                 }
                 else {
                     this.$message({
@@ -170,7 +298,6 @@ export default {
             })
             .then(res => {
                 let data = res.data
-                console.log(data)
                 if (data.success) {
                     this.canManagePros = data.data
                 }
@@ -196,6 +323,34 @@ export default {
                     })
                 }
             })
+        },
+        doDelete(id) {
+            this.$http.delete('/deletePurchaser', {
+                params:{
+                    purchaserId: id
+                }
+            })
+            .then(res => {
+                let data = res.data
+                if (data.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功'
+                    })
+                    this.getPurchase()
+                }else{
+                    this.$message({
+                        type: 'warning',
+                        message: data.msg
+                    })
+                }
+            })
+        },
+        changeFormater(obj) {
+            obj.organizeName = this.canManageOrg.find(org=>org.organizeName == obj.organizeName).id
+            let n = []
+            obj.products.forEach(pro=>{n.push(pro.id)})
+            obj.products = n
         }
     },
 };
@@ -204,7 +359,6 @@ export default {
 <style lang="css" scoped>
 .main{
     display: flex;
-    height: 100%;
     width: 100%;
     flex-direction: column;
     align-items: center;
