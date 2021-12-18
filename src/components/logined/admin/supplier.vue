@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:55:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-15 22:36:26
+ * @LastEditTime: 2021-12-16 15:50:49
  * @Description: 
 -->
 <template>
@@ -10,13 +10,14 @@
         <div class="op-area">
             <el-select v-model="select" style="margin-right: 10px">
                 <el-option label="未审核" value="0">未审核</el-option>
-                <el-option label="已审核" value="1">已审核</el-option>
+                <el-option label="已审核" value="1">已通过</el-option>
+                <el-option label="退回" value="-1"></el-option>
             </el-select>
             <el-input v-model="searchIn" style="width: 50%;margin-right: 30px">
                 <i slot="prepend"  class="el-icon-search"></i>
             </el-input>
             <el-button size="small" type="success" @click="doSearch">查询</el-button>
-            <el-button size="small" type="warning" @click="doAudits">审核</el-button>
+            <el-button size="small" type="warning" @click="ifAudits">审核</el-button>
         </div>
         <el-table :data="suppliers" :border="true"  @selection-change="handleChange">
             <el-table-column type="selection">
@@ -32,7 +33,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="success" @click="getDetail(scope.row.id)">详情</el-button>
-                    <el-button size="mini" type="primary" @click="doAudit(scope.row.id, scope.row.state)" :disabled="scope.row.state !== 0">审核</el-button>
+                    <el-button size="mini" type="primary" @click="ifAudit(scope.row.id)" :disabled="scope.row.state !== 0">审核</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -142,24 +143,67 @@ export default {
     },
 
     methods: {
+        ifAudits(){
+            this.$confirm('是否通过选中账号的申请', '审核', {
+                confirmButtonText: '通过',
+                cancelButtonText: '拒绝',
+                center: true,
+                type: 'primary'
+            })
+            .then(() => {
+                this.doAudits(1)
+            })
+            .catch(() => {
+                this.doAudits(-1)
+            })
+        },
+        ifAudit(id) {
+            this.$confirm('是否通过该账号的申请', '审核',{
+                confirmButtonText: '通过',
+                cancelButtonText: '拒绝',
+                center: true,
+                type: 'primary'
+            })
+            .then(() => {
+                this.doAudit(id, 1)
+            })
+            .catch(() => {
+                this.doAudit(id, -1)
+            })
+        },
         doSearch() {
             this.thing = this.searchIn
+            if (this.select == '0')
             this.getsupplier()
+            else{
+                this.getAuditedSupplier()
+            }
         },
         prePage(page) {
             this.page = page
+            if (this.select == '0')
             this.getsupplier()
+            else{
+                this.getAuditedSupplier()
+            }
         },
         nextPage(page) {
             this.page = page
+            if (this.select == '0')
             this.getsupplier()
+            else{
+                this.getAuditedSupplier()
+            }
         },
         changePage(page) {
             this.page = page
+            if (this.select == '0')
             this.getsupplier()
+            else{
+                this.getAuditedSupplier()
+            }
         },
         doAudit(id, state) {
-            console.log(this.accountInfo.accountId, id, state)
             this.$http({
                 url: '/checkSupplierInfo',
                 method:  'put',
@@ -191,9 +235,9 @@ export default {
                 console.error(res)
             })
         },
-        doAudits() {
+        doAudits(state) {
             this.selected_column.forEach(col => {
-                this.doAudit(col.id, col.state)
+                this.doAudit(col.id, state)
             })
         },
         handleChange(val) {
@@ -204,10 +248,9 @@ export default {
            
         },
         getsupplier() {
-            let url = this.select=='0'? '/getAllUnreviewedSupplierInfoByConditions' : '/getAllAuditedSupplierInfoByConditions'
             this.$http({
                 method: 'get',
-                url: url,
+                url: '/getAllUnreviewedSupplierInfoByConditions',
                 params:{
                     page: this.page,
                     pageSize: this.pageSize,
@@ -227,6 +270,36 @@ export default {
                         message: data.msg
                     })
                 }
+            })
+        },
+        getAuditedSupplier() {
+            console.log(this.accountInfo.accountId)
+            this.$http.get('/getAllAuditedSupplierInfoByConditions', {
+                params:{
+                    managerId: this.accountInfo.accountId,
+                    page: this.page,
+                    pageSize: this.pageSize,
+                    queryConditions: this.thing,
+                    state: this.select
+                }
+            })
+            .then(res => {
+                let data = res.data
+
+                console.log(data)
+                if (data.success){
+                    this.suppliers = data.data.supplierInfos
+                    this.total = data.data.totalCount
+                }
+                else{
+                    this.$message({
+                        type: 'warning',
+                        message: data.msg
+                    })
+                }
+            })
+            .catch(err => {
+                console.error(err)
             })
         },
         getDetail(id) {
@@ -285,6 +358,7 @@ export default {
 .op-area{
     margin: 30px;
     margin-bottom: 20px;
+    margin-top: 15px;
     width: 100%;
     display: flex;
 
