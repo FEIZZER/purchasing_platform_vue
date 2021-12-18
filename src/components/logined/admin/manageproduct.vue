@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:57:07
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-18 15:36:44
+ * @LastEditTime: 2021-12-18 16:20:40
  * @Description: 
 -->
 <template>
@@ -380,7 +380,7 @@ export default {
 }
 .opra{
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     width: 90%;
 }
 .table{
