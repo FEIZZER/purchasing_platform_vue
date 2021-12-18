@@ -127,6 +127,10 @@ const admin = [
         component: () => import('@/components/logined/admin/managetype')
       },
       {
+        path: 'managepproject',
+        component: ()=> import('@/components/logined/admin/managepproject')
+      },
+      {
         path: 'purchase',
         component: () => import('@/components/logined/admin/purchase')
       },

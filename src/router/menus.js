@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 16:13:42
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-13 22:21:43
+ * @LastEditTime: 2021-12-18 17:23:44
  * @Description: 
  */
 export const superMenus = [
@@ -46,7 +46,7 @@ export const adminMenus = [
         childrens: [
             {name: '产品管理', route: '/manageproduct'},
             {name: '类型管理', route: '/managetype'},
-            {name: '项目管理'},
+            {name: '项目管理', route: '/managepproject'},
         ]
     },
 ]
