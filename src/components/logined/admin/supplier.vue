@@ -2,13 +2,13 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:55:09
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-16 15:50:49
+ * @LastEditTime: 2021-12-22 16:53:36
  * @Description: 
 -->
 <template>
     <div class="main">
         <div class="op-area">
-            <el-select v-model="select" style="margin-right: 10px">
+            <el-select v-model="selectIn" style="margin-right: 10px">
                 <el-option label="未审核" value="0">未审核</el-option>
                 <el-option label="已审核" value="1">已通过</el-option>
                 <el-option label="退回" value="-1"></el-option>
@@ -33,7 +33,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="success" @click="getDetail(scope.row.id)">详情</el-button>
-                    <el-button size="mini" type="primary" @click="ifAudit(scope.row.id)" :disabled="scope.row.state !== 0">审核</el-button>
+                    <el-button size="mini" type="primary" @click="ifAudit(scope.row.id)">审核</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -108,13 +108,13 @@
                 <el-button type="primary" @click="() => moreDetail_visible = false">确认</el-button>
             </div>
         </el-dialog>
+        
     </div>
 </template>
-
 <script>
 export default {
     name: 'PurchasingPlatformVueSupplier',
-
+  
     data() {
         return {
             accountInfo: {},
@@ -127,11 +127,14 @@ export default {
             moreDetail: {},
             searchIn: '',
             thing: '',
+            selectIn: '0',
             select: '0',
             total:0,
             page:1,
             pageSize: 10,
-            selected_column: []
+            selected_column: [],
+            audit_visible: false,
+            audits_visible: false
         };
     },
     mounted() {
@@ -148,31 +151,36 @@ export default {
                 confirmButtonText: '通过',
                 cancelButtonText: '拒绝',
                 center: true,
+                distinguishCancelAndClose: true,
                 type: 'primary'
             })
             .then(() => {
                 this.doAudits(1)
             })
-            .catch(() => {
+            .catch(res => {
+                if (res === 'cancel')
                 this.doAudits(-1)
             })
         },
-        ifAudit(id) {
-            this.$confirm('是否通过该账号的申请', '审核',{
+        ifAudit(id){
+            this.$confirm('是否通过该申请','申请',{
                 confirmButtonText: '通过',
                 cancelButtonText: '拒绝',
                 center: true,
+                distinguishCancelAndClose: true,
                 type: 'primary'
             })
-            .then(() => {
+            .then(()=>{
                 this.doAudit(id, 1)
             })
-            .catch(() => {
+            .catch(res=>{
+                if (res==='cancel')
                 this.doAudit(id, -1)
             })
         },
         doSearch() {
             this.thing = this.searchIn
+            this.select = this.selectIn
             if (this.select == '0')
             this.getsupplier()
             else{
@@ -273,7 +281,6 @@ export default {
             })
         },
         getAuditedSupplier() {
-            console.log(this.accountInfo.accountId)
             this.$http.get('/getAllAuditedSupplierInfoByConditions', {
                 params:{
                     managerId: this.accountInfo.accountId,
@@ -285,8 +292,6 @@ export default {
             })
             .then(res => {
                 let data = res.data
-
-                console.log(data)
                 if (data.success){
                     this.suppliers = data.data.supplierInfos
                     this.total = data.data.totalCount
@@ -365,5 +370,8 @@ export default {
 }
 .el-dialog__body{
     padding-top: 8px;
+}
+.cancekButton{
+    color: #000;
 }
 </style>

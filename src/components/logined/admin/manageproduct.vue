@@ -2,7 +2,7 @@
  * @Author: feizzer
  * @Date: 2021-12-13 20:57:07
  * @LastEditors: feizzer
- * @LastEditTime: 2021-12-18 16:20:40
+ * @LastEditTime: 2021-12-22 14:28:29
  * @Description: 
 -->
 <template>
@@ -39,8 +39,10 @@
                 <el-table-column  label="更改时间" width="" align="center" prop="updateTime">
 
                 </el-table-column>
-                <el-table-column label="所属类型" width="" align="center" prop="productType">
-                    
+                <el-table-column label="所属类型" width="" align="center" >
+                    <template slot-scope="scope">
+                        {{scope.row.typeBriefInfo.productType}}
+                    </template>
                 </el-table-column>
                 <el-table-column  label="操作" width="200px" align="center">
                     <template slot-scope="scope">
@@ -208,6 +210,7 @@ export default {
             })
         },
         showChange(id) {
+            console.log(id)
             this.$http.get('/getProductInfoById', {
                 params:{
                     id: id
@@ -322,6 +325,7 @@ export default {
                 if (data.success) {
                     this.products = data.data.productInfos
                     this.total = data.data.totalCount
+                    console.log(this.products)
                 }
                 else{
                     this.$message({
